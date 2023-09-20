@@ -1,33 +1,38 @@
-﻿# The script of the game goes in this file.
+﻿
 
-# Declare characters used by this game. The color argument colorizes the
-# name of the character.
-
-define e = Character("Eileen")
-
-
-# The game starts here.
 
 label start:
 
-    # Show a background. This uses a placeholder by default, but you can
-    # add a file (named either "bg room.png" or "bg room.jpg") to the
-    # images directory to show it.
+    hide black
+    
+    $ player = fighter("Player")
+    $ bunny = fighter("Bunny",1,1,0)
+    $ iron = fighter("Iron Filings", 5, 5, 1)
+    $ enemy = fighter("Enemy")
 
-    scene bg room
+    label .encounter:
+        call roll_enemy
 
-    # This shows a character sprite. A placeholder is used, but you can
-    # replace it by adding a file named "eileen happy.png" to the images
-    # directory.
-
-    show eileen happy
-
-    # These display lines of dialogue.
-
-    e "You've created a new Ren'Py game."
-
-    e "Once you add a story, pictures, and music, you can release it to the world!"
-
-    # This ends the game.
+        $ player_hp = player.hp
+        $ enemy_hp = enemy.hp
+        $ player_max_hp = player.max_hp
+        $ enemy_max_hp = enemy.max_hp
+        $ enemy_name = enemy.name
+        jump battle
+    
+    "welcome"
+    "initialising now"
+    jump .encounter
+    label .resume:
+        scene
+        "resuming content now"
+        "some more flavour text that's conditional on your power"
+        "let's enter another encounter"
+        jump .encounter
 
     return
+
+
+    
+
+
