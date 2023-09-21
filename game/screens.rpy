@@ -264,7 +264,7 @@ screen quick_menu():
 init python:
     config.overlay_screens.append("quick_menu")
 
-default quick_menu = True
+default quick_menu = False
 
 style quick_button is default
 style quick_button_text is button_text
@@ -720,7 +720,7 @@ style slot_button_text:
 ## themselves.
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
-
+define config.default_music_volume = 0.0
 screen preferences():
 
     tag menu
@@ -751,6 +751,7 @@ screen preferences():
                 ## added here, to add additional creator-defined preferences.
 
             null height (4 * gui.pref_spacing)
+            
 
             hbox:
                 style_prefix "slider"
@@ -763,7 +764,7 @@ screen preferences():
                     bar value Preference("text speed")
 
                     label _("Auto-Forward Time")
-
+                    
                     bar value Preference("auto-forward time")
 
                 vbox:
@@ -1430,19 +1431,23 @@ screen hp_bars_1v1:
 
 screen combat_start:
     hbox:
-        align (0.5,0.5)
+        align (0.5,0.2)
         text "COMBAT START!" size 50
-    timer 1.0 action [Hide("combat_start"), Return()]
+    timer 1.0 action [Hide("combat_start"), Play("sound",file="slice.mp3"), Return()]
     
 
 screen enemy_phase:
     hbox:
-        align (0.5,0.5)
-        text "ENEMY PHASE" size 50
+        align (0.5,0.2)
+        text "ENEMY PHASE" size 50 color "#ff0000"
     timer 1.0 action [Hide("enemy_phase"), Return()]
     
 screen player_phase:
     hbox:
-        align (0.5,0.5)
+        align (0.5,0.2)
         text "PLAYER PHASE" size 50 color "#ff0000"
     timer 1.0 action [Hide("player_phase"), Return()]
+
+screen ctc(arg=None):
+    if not config.skipping:
+        on 'hide' action Play('sound', 'advance.mp3')

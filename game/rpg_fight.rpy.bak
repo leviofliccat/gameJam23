@@ -40,9 +40,9 @@ label battle:
             # Player Turn
 
             # Rolling variables
-            call dice_roll from _call_dice_roll
-            call roll_polarity_enemy from _call_roll_polarity_enemy
-            call roll_polarity_player from _call_roll_polarity_player
+            call dice_roll
+            call roll_polarity_enemy
+            call roll_polarity_player
             call screen player_phase
             ## choice screen
             call screen stats
@@ -83,7 +83,7 @@ label battle:
                     else:
                         play sound "explosion.mp3" volume 0.2
                         show explosion at right
-                        call enemy_death_transition from _call_enemy_death_transition
+                        call enemy_death_transition
                         hide explosion with dissolve
                         "The enemy seems to have exploded from the impact."
                 else:
@@ -93,7 +93,7 @@ label battle:
                     $ enemy_hp -= 1
                     play sound "hit.mp3"
                     show bear at slam_player
-                    call enemy_slam from _call_enemy_slam
+                    call enemy_slam
                     "You take [d4] damage. The enemy takes 1 damage."
 
             elif selected_action == "Defend":
@@ -121,19 +121,19 @@ label battle:
 
 
             if enemy_hp <= 0:
-                call enemy_death_transition from _call_enemy_death_transition_1
+                call enemy_death_transition
                 play sound "success.mp3"
                 "You win the combat encounter!"
-                call absorb from _call_absorb
+                call absorb
                 hide screen hp_bars_1v1
                 jump start.resume
 
             # Enemy Turn
             call screen enemy_phase
-            call dice_roll from _call_dice_roll_1
+            call dice_roll
             $ d4 = d4*enemy_attack
             $ d10 = d10*enemy_attack
-            call pick_enemy from _call_pick_enemy
+            call pick_enemy
             $ player_defense = 0
             $ selected_action = ""
             $ action_text = ""

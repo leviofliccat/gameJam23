@@ -34,21 +34,21 @@ screen stats:
             vbox:
                 style "stat_options"
                 textbutton "Quick Attack":
-                    hovered SetLocalVariable("action_desc", "A light strike. No cost.")
+                    hovered [SetLocalVariable("action_desc", "A basic strike. Could deal low damage, or could crit. No cost."), Play("sound", "hover.mp3")]
                     unhovered SetLocalVariable("action_desc", "What are you going to do?")
-                    action SetVariable("selected_action", "Quick Attack"), Return()
+                    action [SetVariable("selected_action", "Quick Attack"), Return()]
                 textbutton "Skill Attack":
-                    hovered  SetLocalVariable("action_desc", "Attack with your magnetic field. Costs 1 Flux."), 
+                    hovered  [SetLocalVariable("action_desc", "Attack with your magnetic field. Costs 1 Flux."), Play("sound", "hover.mp3")]
                     unhovered SetLocalVariable("action_desc", "What are you going to do?")
-                    action SetVariable("selected_action", "Skill Attack"), ToggleScreen("stats"), Show("skills")
+                    action [SetVariable("selected_action", "Skill Attack"), Play("sound",file="select.mp3"), ToggleScreen("stats"),Show("skills")]
                 textbutton "Defend":
-                    hovered  SetLocalVariable("action_desc", "Enter a defensive stance and recover 1 Flux."), 
+                    hovered  [SetLocalVariable("action_desc", "Enter a defensive stance and recover 1 Flux."), Queue("sound", "hover.mp3")]
                     unhovered SetLocalVariable("action_desc", "What are you going to do?")
-                    action SetVariable("selected_action", "Defend"), Return()
+                    action [SetVariable("selected_action", "Defend"),Return()]
                 textbutton "Heal":
-                    hovered  SetLocalVariable("action_desc", "Recover some health. Costs 1 Flux."), 
+                    hovered  [SetLocalVariable("action_desc", "Recover some health. Costs 1 Flux."), Queue("sound", "hover.mp3")] 
                     unhovered SetLocalVariable("action_desc", "What are you going to do?")
-                    action SetVariable("selected_action", "Heal"), Return()
+                    action [SetVariable("selected_action", "Heal"),Return()]
             vbox:
                 style "stat_desc"
                 text "[action_desc]" 
@@ -71,18 +71,18 @@ screen skills:
             vbox:
                 style "stat_options"
                 textbutton "Attack with North pole":
-                    hovered SetLocalVariable("skill_desc", "Perform this skill with a North polarity.")
+                    hovered [SetLocalVariable("skill_desc", "Perform this skill with a North polarity."), Play("sound", "hover.mp3")]
                     unhovered SetLocalVariable("skill_desc", "")
-                    action SetVariable("pole", "North"), ToggleScreen("skills"), Return()
+                    action [SetVariable("pole", "North"), ToggleScreen("skills"), Return()]
                 textbutton "Attack with South pole":
-                    hovered  SetLocalVariable("skill_desc", "Perform this skill with a South polarity."), 
+                    hovered  [SetLocalVariable("skill_desc", "Perform this skill with a South polarity."), Queue("sound", "hover.mp3")]
                     unhovered SetLocalVariable("skill_desc", "")
-                    action SetVariable("pole", "South"), ToggleScreen("skills"), Return()
+                    action [SetVariable("pole", "South"), ToggleScreen("skills"), Return()]
                 textbutton "Back":
                     yoffset 20
-                    hovered  SetLocalVariable("skill_desc", "Cancel and return to action selection."), 
+                    hovered  [SetLocalVariable("skill_desc", "Cancel and return to action selection."), Play("sound", "hover.mp3")] 
                     unhovered SetLocalVariable("skill_desc", "")
-                    action SetVariable("selected_action", ""), ToggleScreen("skills"), Show("stats")
+                    action [SetVariable("selected_action", ""), Play("sound", "select.mp3"), ToggleScreen("skills"), Show("stats")]
             vbox:
                 style "stat_desc"
                 text "[skill_desc]" 

@@ -41,14 +41,14 @@ label start:
     jump .encounter
     label .resume:
         scene back
-        call storytext from _call_storytext
+        call storytext
         "Entering another encounter!"
         if player.power >= 10:
             jump .finale
         jump .encounter
     label .encounter:
         call screen combat_start
-        call roll_enemy from _call_roll_enemy
+        call roll_enemy
         scene back
         $ player_hp = player.hp
         $ enemy_hp = enemy.hp

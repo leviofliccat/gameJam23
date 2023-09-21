@@ -115,13 +115,13 @@ label magmen_attacks:
 
 label pick_enemy:
     if enemy == iron:
-        call iron_attacks from _call_iron_attacks
+        call iron_attacks
     elif enemy == bunny:
-        call bunny_attacks from _call_bunny_attacks
+        call bunny_attacks
     elif enemy == ginger:
-        call ginger_attacks from _call_ginger_attacks
+        call ginger_attacks
     elif enemy == magmen:
-        call magmen_attacks from _call_magmen_attacks
+        call magmen_attacks
     return
 
 label roll_polarity_enemy:
