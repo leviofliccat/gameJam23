@@ -1,17 +1,5 @@
 ﻿##  RPG fight
 
-## fighter class
-init python:
-    class fighter:
-        def __init__(self, name, max_hp = 10, hp = 10, attack = 1, polarity = "North", power = 0):
-            self.name = name
-            self.max_hp = max_hp
-            self.hp = hp
-            self.attack = attack
-            self.polarity = polarity
-            self.power = power
-
-
 # Random Number Generator
 label dice_roll:
     $ d4 = renpy.random.randint(1, 4)
@@ -20,46 +8,31 @@ label dice_roll:
     $ d20 = renpy.random.randint(1, 20)
     return
 
-# label init_start:
-
-    # $ player = fighter("Player")
-    # $ bunny = fighter("Bunny",1,1,0)
-    # $ iron = fighter("Iron Filings", 5, 5, 1)
-    
-    # call roll_enemy
-    # scene
-
-    # $ player_hp = player.hp
-    # $ enemy_hp = enemy.hp
-    # $ player_max_hp = player.max_hp
-    # $ enemy_max_hp = enemy.max_hp
-    # $ enemy_name = enemy.name
-    
-    
-    
-
-
 ## BATTLE
-
 label battle:
-
+    ## initialise variables
     $ player_hp = player_max_hp
     $ enemy_hp = enemy_max_hp
     $ player_attack = player.attack
     $ enemy_attack = enemy.attack
     $ player_defense = 0
+    $ selected_action = ""
+    $ action_text = ""
+    $ pole = ""
 
     show screen hp_bars_1v1
-    show screen player_power_box
-    show screen polarity_box
     
     show knight at left
     if enemy == bunny:
         show bunny at right
     elif enemy == iron:
         show ironfiling at right
+    elif enemy == ginger:
+        show gingerbreadman at right
+    elif enemy == magmen:
+        show magmen at right
 
-
+    ## battle state
     while player_hp > 0 and enemy_hp > 0:
 
         # Player Turn
@@ -68,75 +41,84 @@ label battle:
         call dice_roll
         call roll_polarity_enemy
         call roll_polarity_player
-
-        call screen selectAction(player)
-        menu:
-            "What are you going to do?"
-
-            "Quick Attack":
-                if player.polarity != enemy.polarity:                                           
-                    $ player_attack = d4
-                    if d10 >= 5:                                                
-                        $ player_attack += 1   
-                        $ enemy_hp -= player_attack
-                        "Critically attractive! You deal an extra 1 damage for [player_attack] damage!"
-                    else:                               
-                        $ enemy_hp -= player_attack
-                        "The power of attraction!  You hit for [player_attack] damage!"
-                elif player.polarity == enemy.polarity:                                                       
-                    "You and the enemy repel each other... You bounce off the enemy and miss!" 
-
-            "Attack with magnetic field":
-                menu:
-                    "Attack with North pole":
-                        "You channel your magnetic field and direct its power towards the enemy!"
-                        if "North" == enemy.polarity:
-                            $ player_attack = d6
-                            $ enemy_hp -= player_attack
-                            "Nice work! The field lines give the enemy a good hard shove!"
-                            if enemy_hp >0:
-                                "Despite the recoil, the enemy comes back for more."
-                            else:
-                                "The enemy seems to have exploded from the impact."
-                        else:
-                            "Your field lines are too strongly attracted! You are pulled towards the enemy and your faces slam together!"
-                            $ player_hp -= d4/2
-                            $ enemy_hp -= 1
-                            "You take [d4/2] damage. The enemy takes 1 damage."
-                            
-                    "Attack with South pole":
-                        if "South" == enemy.polarity:
-                            "You channel your magnetic field and direct its power towards the enemy!"
-                            $ player_attack = d6
-                            $ enemy_hp -= player_attack
-                            "Nice work! The field lines give the enemy a good hard shove!"
-                            if enemy_hp >0:
-                                "Despite the recoil, the enemy comes back for more."
-                            else:
-                                "The enemy seems to have exploded from the impact."
-                        else:
-                            "Your field lines are too strongly attracted! You are pulled towards the enemy and your faces slam together!"
-                            $ player_hp -= d4/2
-                            $ enemy_hp -= 1
-                            "You take [d4/2] damage. The enemy takes 1 damage."
-
-            "Defend":
-                "You prepare your defenses..." 
-                $ player_defense = 2    
-                "Defense increased by 2!"                             
         
+        call screen player_phase
+        ## choice screen
+        call screen stats
+        
+        if selected_action == "Quick Attack":
+            if player.polarity != enemy.polarity:                                           
+                $ player_attack = d6
+                if d10 >= 5:                                                
+                    $ player_attack += d4
+                    $ enemy_hp -= player_attack
+                    play sound "hit.mp3"
+                    "Critically attractive! You deal [player_attack] damage!"
+                else:                               
+                    $ enemy_hp -= player_attack
+                    play sound "hit.mp3"
+                    "The power of attraction!  You hit for [player_attack] damage!"
+            elif player.polarity == enemy.polarity:  
+                play sound "bounce.mp3"                                                     
+                "You and the enemy repel each other... You bounce off the enemy and miss!" 
+
+        elif selected_action == "Skill Attack":
+            "You channel your magnetic field and direct its power towards the enemy!"
+            $ player.power -= 1
+            if pole == enemy.polarity:
+                $ player_attack = d6 + d4
+                $ enemy_hp -= player_attack
+                play sound "pew.mp3"
+                "Nice work! The field lines give the enemy a good hard shove! You deal [d6] damage."
+                if enemy_hp >0:
+                    "Despite the recoil, the enemy comes back for more."
+                else:
+                    "The enemy seems to have exploded from the impact."
+            else:
+                "Your field lines are too strongly attracted! You are pulled towards the enemy and your faces slam together!"
+                $ player_hp -= d4
+                $ enemy_hp -= 1
+                play sound "hit.mp3"
+                with vpunch
+                "You take [d4] damage. The enemy takes 1 damage."
+
+        elif selected_action == "Defend":
+            play sound "shield.mp3"
+            "You prepare your defenses..." 
+            $ player_defense = 3
+            "Defense is now 3!" 
+            $ player.power += 1
+            "You recover 1 Flux."
+
+        elif selected_action == "Heal":
+            if player.power < 1:
+                "You don't have enough Flux for that."
+                $ selected_action = ""
+                call screen stats
+            else:
+                $ player_hp += d6
+                $ player.power -= 1
+                play sound "shield.mp3"
+                "You heal [d6] health!"
+
+
         if enemy_hp <= 0:
+            scene black
+            show knight
             "You win the combat encounter!"
             call absorb
+            hide screen hp_bars_1v1
             jump start.resume
 
-        # Enemy Turn - Semi-randomized behavior!
-
+        # Enemy Turn
+        call screen enemy_phase
         call dice_roll
-        $ d4 = d4*enemy_attack - player_defense
-        $ d10 = d10*enemy_attack - player_defense
+        $ d4 = d4*enemy_attack
+        $ d10 = d10*enemy_attack
         call pick_enemy
         $ player_defense = 0
+        $ selected_action = ""
+        $ action_text = ""
             
 
     "Ouch! Your magnetisation points have been reduced to zero!"
@@ -152,6 +134,7 @@ label battle:
                 call screen confirm(message="Play again?", yes_action=Jump('start'), no_action=Quit(confirm=False))
             else:
                 $ player_hp = player_max_hp
+                $ player.power -= 2
                 "You feel rejuvenated, yet at somewhat of a loss anyhow."
                 "The journey continues!"
                 jump start.resume
@@ -164,19 +147,6 @@ label battle:
             call screen confirm(message="Play again?", yes_action=Jump('start'), no_action=Quit(confirm=False))
     
 
-    menu harder_menu:
-        "Play this level again?":
-            $ player_hp = player_max_hp
-            $ enemy_hp = enemy_max_hp
-            jump battle
-        "continue":
-            scene
-            jump start.resume
-        "Proceed" if player.power >=5:
-            jump finale
 
 
 
-label finale:
-    "congrats u won"
-    return

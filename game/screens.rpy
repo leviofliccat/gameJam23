@@ -1410,64 +1410,39 @@ style nvl_button_text:
 ## HP bars
 
 screen hp_bars_1v1:
-    
     vbox:
         spacing 20
         xalign 0.1
-        yalign 0.0
+        yalign 0.02
         xmaximum 600
-        text "Player"
+        hbox:
+            spacing 300
+            text "Player"
+            text "Defense: [player_defense]"
         bar value player_hp range player_max_hp
     vbox:
         spacing 20
         xalign 0.9
-        yalign 0.0
+        yalign 0.02
         xmaximum 600
         text "[enemy.name]"
         bar value enemy_hp range enemy_max_hp
 
-## screen for power
-
-screen player_power_box:
-    vbox:
-        xalign 0.0
-        yalign 0.5
-        spacing 20
-        text "Magnetic Flux:"
-        text "[player.power]"
-        
-
-screen polarity_box:
-    vbox:
-        xalign 0.9
-        yalign 0.5
-        spacing 20
-        text "Enemy's polarity:"
-        text "[enemy.polarity]"
-        text "enemy's max hp is [enemy.max_hp]"
-        text "Player's polarity:"
-        text "[player.polarity]"
-
-
-
-
-screen selectAction(currentFighter):
-    #   selectAction is a screen that is part of battleUI under the useage "action".
-    #   selectAction inherents its style from battleUI.
-    #   Args:
-    #           currentFigher (fighter): Current fighter object in orderInitiators list.
-    vbox:
-        textbutton "Engage":
-            xsize 160
-            hovered SetVariable("action_desc", "Engage opponents with abilities .")
-            unhovered SetVariable("action_desc", "What should [currentFighter] do?")
-            action Return("engaging")
+screen combat_start:
+    hbox:
+        align (0.5,0.5)
+        text "COMBAT START!" size 50
+    timer 1.0 action [Hide("combat_start"), Return()]
     
-        textbutton "Defend":
-            xsize 160
-            hovered  SetVariable("action_desc", "Sit this turn out and recover mana.  Also increases defense."), 
-            unhovered SetVariable("action_desc", "What should [currentFighter] do?")
-            #renpy.curried_invoke_in_new_context(increaseDef, currentFighter),
-            action Return("defending")
-    vbox:
-        text action_desc 
+
+screen enemy_phase:
+    hbox:
+        align (0.5,0.5)
+        text "ENEMY PHASE" size 50
+    timer 1.0 action [Hide("enemy_phase"), Return()]
+    
+screen player_phase:
+    hbox:
+        align (0.5,0.5)
+        text "PLAYER PHASE" size 50 color "#ff0000"
+    timer 1.0 action [Hide("player_phase"), Return()]

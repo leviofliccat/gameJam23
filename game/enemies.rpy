@@ -1,24 +1,48 @@
+## fighter class
+init python:
+    class fighter:
+        def __init__(self, name, max_hp = 20, hp = 20, attack = 1, polarity = "North", power = 5, sprite = "knight.jpg"):
+            self.name = name
+            self.max_hp = max_hp
+            self.hp = hp
+            self.attack = attack
+            self.polarity = polarity
+            self.power = power
+            self.sprite = sprite
+
+
 ##player: absorb magnet energy
 label absorb:
     "You absorb the magnetic energy..."
-    $ player.power += 1
-    "your power is now [player.power]"
+    $ player.power += 2
+    "Your Flux is now [player.power]!"
     return
 
 
 ##iron filing: one shot one kill (almost)
 label iron_attacks:
-    if d20 <= 18:                                                   
-        "The iron filings rush at you, attaching themselves to your sexy magnetic body."
-        "You can't get them unstuck from you!"
-        if player_defense ==2:
-            $ player_hp = 1
-            "Your defense leaves you with a sliver of hope after the devastating attack!"
-        else:
-            $ player_hp -= 1000
-            "The Iron Filings deal 1000 damage!"
+    if d20 <= 18:        
+        play sound "chain.mp3"
+        if player.polarity == enemy.polarity:
+            "The iron filings rush at you in an attempt to stick permanently to your body."
+            "But wait! Some of them are repelled! They don't look too happy about that."        
+            $ player_hp -= 2
+            play sound "swordhit.mp3"
+            "You take 2 damage!"       
+        else:                            
+            "The iron filings rush at you, attaching themselves to your attractive magnetic body."
+            "You can't get them unstuck from you!"
+            if player_defense ==2:
+                $ player_hp = 1
+                play sound "sword.mp3"
+                "Your defense leaves you with a sliver of hope after the devastating attack!"
+            else:
+                $ player_hp -= 1000
+                play sound "sword.mp3"
+                "The Iron Filings deal 1000 damage! Critical!!"
     else:                                                    
         $ player_hp -= d4
+        play sound "swordhit.mp3"
         "The Filings attack for [d4] damage!"    
     return
     
@@ -34,25 +58,47 @@ label bunny_attacks:
     else:
         "The bunny's cute smile disappears for a split second, and what seems like pure malice gleams in its dark eyes."
         "But a moment later it's back to its bouncy self."
-    "The bunny deals 0 damage!"
+    if player_hp < player_max_hp:
+        $ player_hp = player_max_hp
+        "The bunny restores you to full health!"
+    else:
+        "The bunny deals 0 damage!"
     return
 
-# label ginger_attacks:
-#     if d20 >= 19:                                            # 20%       
-#         $ player_hp -= d10
-#         "The Enemy makes a wild attack for [d10] damage!"
-#     elif d20 <=2:                                            # 20%
-#         $ enemy_hp += d4
-#         if enemy_hp < enemy_max_hp:
-#             "The Enemy heals itself, raising [d4] hp!"
-#         else:
-#             $ enemy_hp = enemy_max_hp
-#             "The Enemy fully heals itself back to full hp!"
-#     else:                                                    # 60%
-#         $ player_hp -= d4
-#         "The Enemy attacks for [d4] damage!" 
-#     return
+label ginger_attacks:
+    if d20 ==20:                                            # 10%       
+        $ player_hp -= d10 - player_defense
+        "The gingerbread man heats you with his spatula past your Curie temperature, dealing [d10] damage!"
+    elif d20 <=2:                                            # %
+        $ enemy_hp += d4
+        if enemy_hp < enemy_max_hp:
+            "The Enemy heals itself, raising [d4] hp!"
+        else:
+            $ enemy_hp = enemy_max_hp
+            "The Enemy fully heals itself back to full hp!"
+        return
+    else:                                                    # 80%
+        $ player_hp -= d4 - player_defense
+        "The gingerbread man attacks for [d4] damage!" 
+    if player_defense >0 :
+        "You resist 2 damage!"
+    return
 
+label magmen_attacks:
+    if d20 >= 18:                                            # 10%       
+        $ player_hp -= d6 + 3
+        "The magnet men channel their power and attack together for [d10] damage!"
+    elif d20 <=2:                                            # 10%
+        $ enemy_hp += d4
+        if enemy_hp < enemy_max_hp:
+            "The Enemy heals itself, raising [d4] hp!"
+        else:
+            $ enemy_hp = enemy_max_hp
+            "The Enemy fully heals itself back to full hp!"
+    else:                                                    # 80%
+        $ player_hp -= d6
+        "One of the magnet men attacks for [d6] damage!" 
+    return
 
 
 label pick_enemy:
@@ -60,6 +106,10 @@ label pick_enemy:
         call iron_attacks
     elif enemy == bunny:
         call bunny_attacks
+    elif enemy == ginger:
+        call ginger_attacks
+    else:
+        call magmen_attacks
     return
 
 label roll_polarity_enemy:
@@ -80,15 +130,13 @@ label roll_polarity_player:
 
 label roll_enemy:
     $ en = renpy.random.randint(1,4)
-    if en <= 2:
+    if en ==1:
         $ enemy = bunny
-        
-    else:
+    elif en==2:
         $ enemy = iron
-
-    # elif en ==3:
-    #     $ enemy = ginger
-    # else:
-    #     $ enemy = tower
+    elif en ==3:
+        $ enemy = ginger
+    else:
+        $ enemy = magmen
     return
     

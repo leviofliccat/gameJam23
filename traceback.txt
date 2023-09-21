@@ -1,38 +1,22 @@
 ﻿I'm sorry, but an uncaught exception occurred.
 
 While running game code:
-  File "game/rpg_fight.rpy", line 150, in script
-    call screen confirm(message="Proceed to play the game?", yes_action=Jump(start), no_action=Quit(confirm=False))
-  File "renpy/common/000statements.rpy", line 662, in execute_call_screen
-    args, kwargs = a.evaluate()
-  File "game/rpg_fight.rpy", line 150, in <module>
-    call screen confirm(message="Proceed to play the game?", yes_action=Jump(start), no_action=Quit(confirm=False))
-NameError: name 'start' is not defined
+  File "game/script.rpy", line 46, in script
+    background "black"
+Exception: Sayer 'background' is not defined.
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
-  File "game/rpg_fight.rpy", line 150, in script
-    call screen confirm(message="Proceed to play the game?", yes_action=Jump(start), no_action=Quit(confirm=False))
-  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\ast.py", line 2259, in execute
-    self.call("execute")
-  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\ast.py", line 2241, in call
-    return renpy.statements.call(method, parsed, *args, **kwargs)
-  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\statements.py", line 342, in call
-    return method(parsed, *args, **kwargs)
-  File "renpy/common/000statements.rpy", line 662, in execute_call_screen
-    args, kwargs = a.evaluate()
-  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\ast.py", line 344, in evaluate
-    value = renpy.python.py_eval(v, locals=scope)
-  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\python.py", line 1153, in py_eval
-    return py_eval_bytecode(code, globals, locals)
-  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\python.py", line 1146, in py_eval_bytecode
-    return eval(bytecode, globals, locals)
-  File "game/rpg_fight.rpy", line 150, in <module>
-    call screen confirm(message="Proceed to play the game?", yes_action=Jump(start), no_action=Quit(confirm=False))
-NameError: name 'start' is not defined
+  File "game/script.rpy", line 46, in script
+    background "black"
+  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\ast.py", line 890, in execute
+    who = eval_who(self.who, self.who_fast)
+  File "C:\Users\levio\Desktop\renpy-8.1.2-sdk\renpy\ast.py", line 783, in eval_who
+    raise Exception("Sayer '%s' is not defined." % who)
+Exception: Sayer 'background' is not defined.
 
 Windows-10-10.0.22621 AMD64
 Ren'Py 8.1.2.23090503
 gameJam23 1.0
-Wed Sep 20 21:32:32 2023
+Thu Sep 21 20:01:40 2023
