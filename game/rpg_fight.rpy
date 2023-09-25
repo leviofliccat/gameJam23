@@ -26,7 +26,7 @@ label battle:
     if enemy == bunny:
         show bunny at right
     elif enemy == iron:
-        show ironfiling at right
+        show iron at right
     elif enemy == ginger:
         show ginger at right
     elif enemy == magmen:
