@@ -3,17 +3,17 @@ image back = "arena.jpg"
 
 label start:
     $ counter = 0
-    
     $ player = fighter("Ferro")
     $ bunny = fighter("Bunny Magnet",1,1,0,"South",0,"bunny.png")
     $ iron = fighter("Iron Filings",5, 5, 1,"North",0,"iron.png")
     $ ginger = fighter("Gingerbread Baker Magnet", 20, 20, 1, "North", 0, "ginger.png")
     $ magmen = fighter("Magnet Men", 9, 9, 3, "North", 0, "magmen.png")
     $ enemy = fighter("Enemy")
+    
     show screen ctc
 
 
-    "Controls: MOUSE to select. SPACE or CLICK to continue. ESC or RIGHTCLICK for menu. Hold CTRL to skip."
+    "Controls: SPACE or CLICK to continue. Hold CTRL to skip."
     play sound "fall.mp3" volume 0.3
     with vpunch 
     "{i}!!! \nWhat was that?{/i}"
@@ -32,20 +32,18 @@ label start:
     "{i}After recovering from the initial shock that I, the most attractive, beautiful {b}Polar{/b} Bear magnet in this house, had rolled under the fridge, I steel myself.{/i}"
     "{i}This is my chance!{/i}"
     with hpunch
-    "{i}I won't let the other magnets take my place at the top of the fridge!{/i}"
-    with hpunch
-    "{i}I deserve all the attention and glory!{/i}"
     f "It's time to fight my way out of here and regain my rightful place on the fridge!"
     "{i}Over there! I must defeat that magnet to absorb its magnetic energy and increase my magnetic flux!{/i}"
     "{i}With enough flux, I'll have enough power to stay stuck right at the top of the fridge!{/i}"
     jump .encounter
     label .resume:
         scene back
+        play music "enigmatic.mp3" loop volume 0.5
         call storytext from _call_storytext
-        "Entering another encounter!"
         if player.power >= 10:
             jump .finale
         jump .encounter
+
     label .encounter:
         call screen combat_start
         call roll_enemy from _call_roll_enemy
@@ -69,14 +67,16 @@ label storytext:
         f "Oh, here comes another contestant."
     if player.power >= 10:
         f "Phew, I finally have enough power! It's time to make my way up the fridge!"
+        ## bg kitchen
         play sound "magnet_fridge.mp3"
         f "This is it! Right in the middle of the fridge, where everyone can see me."
+        ## footsteps
         f "...Hang on.{w=0.5} What's going on?!"
         scene black
         play sound "pickup.mp3"
         f "No!{p=0.5}Whose hand is that?!!"
         f "Don't take me away!! NOOOOOO!!!!!"
-        "Thanks for playing!"
+        "{i}Thanks for playing!"
         $ renpy.full_restart()
     return
         

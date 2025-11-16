@@ -1448,6 +1448,7 @@ screen player_phase:
         text "PLAYER PHASE" size 50 color "#ff0000"
     timer 1.0 action [Hide("player_phase"), Return()]
 
+## this plays a sound on text advance
 screen ctc(arg=None):
     if not config.skipping:
         on 'hide' action Play('sound', 'advance.mp3')

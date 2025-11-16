@@ -1,24 +1,13 @@
-﻿##  RPG fight
-
-# Random Number Generator
-label dice_roll:
-    $ d4 = renpy.random.randint(1, 4)
-    $ d6 = renpy.random.randint(1, 6)
-    $ d10 = renpy.random.randint(1, 10)
-    $ d20 = renpy.random.randint(1, 20)
-    return
-
-## BATTLE
+﻿## BATTLE
 label battle:
     ## initialise variables
-    $ player_hp = player_max_hp
-    $ enemy_hp = enemy_max_hp
-    $ player_attack = player.attack
-    $ enemy_attack = enemy.attack
-    $ player_defense = 0
-    $ selected_action = ""
-    $ action_text = ""
-    $ pole = ""
+    python:
+        player_hp = player_max_hp
+        enemy_hp = enemy_max_hp
+        player_attack = player.attack
+        enemy_attack = enemy.attack
+        player_defense = 0
+        selected_action = ""
 
     show screen hp_bars_1v1
     
@@ -41,10 +30,12 @@ label battle:
 
             # Rolling variables
             call dice_roll from _call_dice_roll
-            call roll_polarity_enemy from _call_roll_polarity_enemy
-            call roll_polarity_player from _call_roll_polarity_player
+            if counter != 1:
+                call roll_polarity_enemy from _call_roll_polarity_enemy
+                call roll_polarity_player from _call_roll_polarity_player
             call screen player_phase
             ## choice screen
+            $ pole = ""
             call screen stats
             
             if selected_action == "Quick Attack":
@@ -73,7 +64,7 @@ label battle:
                 show field_south at field with dissolve
                 $ player.power -= 1
                 if pole == enemy.polarity:
-                    $ player_attack = d6 + d4
+                    $ player_attack = max(d6 + d6, 5)
                     $ enemy_hp -= player_attack
                     play sound "pew.mp3" volume 0.5
                     "Nice work! The field lines give the enemy a good hard shove! You deal [player_attack] damage."
@@ -85,7 +76,7 @@ label battle:
                         show explosion at right
                         call enemy_death_transition from _call_enemy_death_transition
                         hide explosion with dissolve
-                        "The enemy seems to have exploded from the impact."
+                        "The enemy explodes!"
                 else:
                     "Your field lines are too strongly attracted! You are pulled towards the enemy and your faces slam together!"
                     hide field_south
@@ -110,6 +101,10 @@ label battle:
             elif selected_action == "Heal":
                 if player.power < 1:
                     "You don't have enough Flux for that."
+                    $ selected_action = ""
+                    call screen stats
+                elif player_hp = player_max_hp:
+                    "You're already at full health!"
                     $ selected_action = ""
                     call screen stats
                 else:
